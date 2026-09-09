@@ -6,8 +6,8 @@ const VR_CATEGORY = '🥽 REALIDAD VIRTUAL';
 const SPONSORS_CHANNEL = '🤝・patrocinadores-del-canal';
 const SPONSOR_NEWS_CHANNEL = '📢・anuncios-patrocinadores';
 const SPONSOR_ROLE = 'Patrocinador';
-const SHOWCASE_MARKER = 'ALANVR_SPONSOR_SHOWCASE_V2';
-const OLD_MARKERS = ['ALANVR_SPONSOR_SHOWCASE_V1','ALANVR_SPONSOR_SHOWCASE_V2'];
+const SHOWCASE_MARKER = 'ALANVR_SPONSOR_SHOWCASE_V3';
+const OLD_MARKERS = ['ALANVR_SPONSOR_SHOWCASE_V1','ALANVR_SPONSOR_SHOWCASE_V2','ALANVR_SPONSOR_SHOWCASE_V3'];
 
 const SKOL_SITE='https://skolvr.com/';
 const SKOL_SMART='https://skolvr.com/collections/smartstock-best-virtual-reality-gunstock';
@@ -16,6 +16,7 @@ const SKOL_SMART_IMG='https://skolvr.com/cdn/shop/collections/smartstock.jpg?v=1
 const SKOL_TOMAHAWK_IMG='https://skolvr.com/cdn/shop/files/best-cheap-vr-gun-sniper-rifleaim-51.jpg?v=1780438450';
 const KK_SITE='https://kkcobvr.com/';
 const KK_K2='https://kkcobvr.com/products/kkcobvr-k2-cooling-fan-face-cover-with-sweat-proof-cotton-interface-pad-for-oculus-meta-quest-2-accessories-relieve-lens-fogging-and-replace-quest-2-facial-cover-cushion';
+const KK_K2_IMG='https://kkcobvr.com/cdn/shop/files/1000x1000-5-4.jpg?v=1684222405&width=1200';
 
 async function request(path,options={}){const r=await fetch(`${API}${path}`,{...options,headers:{Authorization:`Bot ${DISCORD_TOKEN}`,'Content-Type':'application/json',...(options.headers||{})}});if(!r.ok)throw new Error(`Discord ${r.status}: ${(await r.text()).slice(0,500)}`);if(r.status===204)return null;return r.json()}
 async function ensureRole(roles){let role=roles.find(r=>r.name===SPONSOR_ROLE);if(role)return role;return request(`/guilds/${GUILD_ID}/roles`,{method:'POST',body:JSON.stringify({name:SPONSOR_ROLE,color:0x8E44AD,hoist:true,mentionable:false})})}
@@ -26,13 +27,9 @@ async function publishShowcase(channel){
  const recent=await request(`/channels/${channel.id}/messages?limit=100`);
  for(const msg of recent){if(msg.author?.bot && (OLD_MARKERS.some(x=>msg.content?.includes(x)) || msg.embeds?.some(e=>e.footer?.text?.includes('PARTNER •')))) await request(`/channels/${channel.id}/messages/${msg.id}`,{method:'DELETE'}).catch(()=>{});}
  await send(channel.id,{content:`${SHOWCASE_MARKER}\n# ✨ PARTNERS DE ALANTORRES VR\n> Marcas que apoyan el contenido, los directos y el crecimiento de nuestra comunidad VR.`,embeds:[{color:0x8E44AD,title:'🤝 PATROCINADORES DEL CANAL',description:'Este espacio reúne nuestros partners actuales, qué productos nos han enviado y enlaces para conocerlos. Las imágenes son material oficial de cada marca.',footer:{text:'ALANTORRES VR LATINOAMÉRICA • PARTNERS'}}]});
-
  await send(channel.id,{content:`# 🔫 SKOL VR\n🌐 **Sitio oficial:** ${SKOL_SITE}`,embeds:[{color:0x5865F2,title:'SKOL VR × AlanTorres VR',url:SKOL_SITE,description:'SKOL VR nos ha enviado equipamiento para shooters VR que utilizamos dentro del contenido y en sesiones reales de juego. 💜',fields:[{name:'🎯 SMARTstock',value:`[Ver producto / colección oficial](${SKOL_SMART})\nGunstock ligero recibido de SKOL VR.`,inline:true},{name:'🪓 Tomahawk azul',value:`[Conocer Tomahawk](${SKOL_TOMAHAWK})\nNuestro Tomahawk fue enviado en **color azul**.`,inline:true}],image:{url:SKOL_TOMAHAWK_IMG},thumbnail:{url:SKOL_SMART_IMG},footer:{text:'PARTNER • SKOL VR × ALANTORRES VR'}}]});
-
  await send(channel.id,{content:`## 🎯 SMARTstock • SKOL VR\n🔗 ${SKOL_SMART}`,embeds:[{color:0x5865F2,title:'SMARTstock VR Gunstock',url:SKOL_SMART,description:'Uno de los productos que SKOL VR ha enviado al canal.',image:{url:SKOL_SMART_IMG},footer:{text:'Producto oficial • SKOL VR'}}]});
-
- await send(channel.id,{content:`# 🥽 KKCOBVR\n🌐 **Sitio oficial:** ${KK_SITE}`,embeds:[{color:0x9B59B6,title:'KKCOBVR × AlanTorres VR',url:KK_SITE,description:'KKCOBVR forma parte de los colaboradores del canal con su **K2 Cooling Fan Interface**, un accesorio para Meta Quest 2 pensado para mejorar comodidad y ayudar con el empañamiento de las lentes.',fields:[{name:'🛡️ K2 Cooling Fan Interface',value:`[Ver K2 en la tienda oficial](${KK_K2})`,inline:false},{name:'🎥 EN EL CANAL',value:'La probaremos dentro de sesiones reales de VR y contenido de la comunidad.',inline:false}],footer:{text:'PARTNER • KKCOBVR × ALANTORRES VR'}}]});
-
+ await send(channel.id,{content:`# 🥽 KKCOBVR\n🌐 **Sitio oficial:** ${KK_SITE}`,embeds:[{color:0x9B59B6,title:'KKCOBVR × AlanTorres VR',url:KK_SITE,description:'KKCOBVR forma parte de los colaboradores del canal con su **K2 Cooling Fan Interface**, un accesorio para Meta Quest 2 pensado para mejorar comodidad y ayudar con el empañamiento de las lentes.',fields:[{name:'🛡️ K2 Cooling Fan Interface',value:`[Ver K2 en la tienda oficial](${KK_K2})`,inline:false},{name:'🎥 EN EL CANAL',value:'La probaremos dentro de sesiones reales de VR y contenido de la comunidad.',inline:false}],image:{url:KK_K2_IMG},footer:{text:'PARTNER • KKCOBVR × ALANTORRES VR'}}]});
  await send(channel.id,{content:'## 📢 NOVEDADES DE NUESTROS PARTNERS\nLas marcas y estudios autorizados podrán compartir **productos, juegos, lanzamientos, eventos y actualizaciones** en **📢・anuncios-patrocinadores** mediante el rol **Patrocinador**.\n\n💜 *Gracias a las marcas que confían en AlanTorres VR Latinoamérica.*'});
  console.log(`✨ Showcase visual de patrocinadores publicado en #${SPONSORS_CHANNEL}.`);
 }
