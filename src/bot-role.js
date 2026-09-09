@@ -25,19 +25,10 @@ export async function setupBotRole() {
       req(`/guilds/${GUILD_ID}/members?limit=1000`)
     ]);
 
-    let role = roles.find(r => r.name === ROLE_NAME);
+    const role = roles.find(r => r.name === ROLE_NAME);
     if (!role) {
-      role = await req(`/guilds/${GUILD_ID}/roles`, {
-        method: 'POST',
-        body: JSON.stringify({
-          name: ROLE_NAME,
-          color: 0x8E44AD,
-          hoist: true,
-          mentionable: false,
-          permissions: '0'
-        })
-      });
-      console.log(`🤖 Rol ${ROLE_NAME} creado.`);
+      console.warn(`🤖 No existe el rol ${ROLE_NAME}. No se creará automáticamente.`);
+      return;
     }
 
     let assigned = 0;
@@ -50,7 +41,7 @@ export async function setupBotRole() {
         console.error(`BOT-ROLE ${member.user?.username || member.user?.id}:`, e.message);
       }
     }
-    console.log(`🤖 Rol de bots listo. Asignado a ${assigned} bot(s) nuevos.`);
+    console.log(`🤖 Rol de bots encontrado. Asignado a ${assigned} bot(s) nuevos.`);
   } catch (e) {
     console.error('BOT-ROLE:', e.message);
   }
